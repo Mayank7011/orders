@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Order Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .order-section {
+            background-color: white;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .order-form {
+            text-align: center;
+        }
+        .order-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .order-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px;
+        }
+        .order-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .order-item button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Welcome, {{ request.user.username }}!
+    </div>
+    
+    <div class="order-section">
+        <h2>Your Orders:</h2>
+        
+        <div class="order-form">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Place Order</button>
+            </form>
+        </div>
+        
+        <ul class="order-list">
+            {% for order_item in user_orders %}
+                <li class="order-item">
+                    {{ order_item.get_item_name_display }} - {{ order_item.quantity }}
+                    <form method="post" action="{% url 'delete_order_item' order_item.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
